@@ -22,7 +22,8 @@ namespace Palmmedia.DbContext2Yuml.Core
             var assembly = Assembly.LoadFrom(pathToDll);
 
             var entities = assembly.GetTypes()
-                .Where(t => t.GetProperties().Any(p => p.CustomAttributes.Any(a => a.AttributeType.Equals(typeof(KeyAttribute)))))
+                .Where(t => (t.BaseType != null && t.BaseType.Name == "IdentityUser")
+                    || t.GetProperties().Any(p => p.CustomAttributes.Any(a => a.AttributeType.Equals(typeof(KeyAttribute)))))
                 .ToDictionary(t => t, t => new Entity(t.Name));
 
             foreach (var item in entities)
@@ -49,7 +50,12 @@ namespace Palmmedia.DbContext2Yuml.Core
                     {
                         // ManyToMany or OneToMany
                         Type targetType = sourceProperty.PropertyType.GenericTypeArguments[0];
-                        Entity targetEntity = entities[targetType];
+                        Entity targetEntity = null;
+
+                        if (!entities.TryGetValue(targetType, out targetEntity))
+                        {
+                            continue;
+                        }
 
                         if (targetType.GetProperties().Any(p => p.PropertyType.IsCollectionType()
                             && p.PropertyType.GenericTypeArguments[0].Equals(item.Key)))

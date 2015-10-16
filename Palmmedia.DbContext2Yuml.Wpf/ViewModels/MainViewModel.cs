@@ -16,6 +16,8 @@ namespace Palmmedia.DbContext2Yuml.Wpf.ViewModels
 
         private string file, error;
 
+        private bool showInheritance = true;
+
         private GraphViewModel graph;
 
         public MainViewModel(
@@ -38,6 +40,20 @@ namespace Palmmedia.DbContext2Yuml.Wpf.ViewModels
         {
             get { return this.file; }
             set { this.SetProperty(ref this.file, value); }
+        }
+
+        public bool ShowInheritance
+        {
+            get
+            {
+                return this.showInheritance;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.showInheritance, value);
+                this.UpdateGraph();
+            }
         }
 
         public string Error
@@ -67,7 +83,7 @@ namespace Palmmedia.DbContext2Yuml.Wpf.ViewModels
 
             Task<string>.Factory.StartNew(() =>
             {
-                return this.yumlGraphBuilder.CreateYumlGraph(this.File);
+                return this.yumlGraphBuilder.CreateYumlGraph(this.File, this.ShowInheritance);
             })
             .ContinueWith(
                 async t =>

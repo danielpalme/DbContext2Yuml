@@ -17,21 +17,33 @@ namespace Palmmedia.DbContext2Yuml.Core
         /// <returns>The Yuml graph.</returns>
         public string CreateYumlGraph(string pathToDll)
         {
+            return this.CreateYumlGraph(pathToDll, true);
+        }
+
+        /// <summary>
+        /// Creates the Yuml graph.
+        /// </summary>
+        /// <param name="pathToDll">The path to the DLL.</param>
+        /// <param name="showInheritance">if set to <c>true</c> inheritance relations are rendered.</param>
+        /// <returns>The Yuml graph.</returns>
+        public string CreateYumlGraph(string pathToDll, bool showInheritance)
+        {
             if (pathToDll == null)
             {
                 throw new ArgumentNullException("pathToDll");
             }
 
             IEnumerable<Entity> entities = EntityExtractor.GetEntities(pathToDll);
-            return CreateYumlGraph(entities);
+            return CreateYumlGraph(entities, showInheritance);
         }
 
         /// <summary>
         /// Converts the commits into a Yuml graph.
         /// </summary>
         /// <param name="entities">The entities.</param>
+        /// <param name="showInheritance">if set to <c>true</c> inheritance relations are rendered.</param>
         /// <returns>The Yuml graph.</returns>
-        private static string CreateYumlGraph(IEnumerable<Entity> entities)
+        private static string CreateYumlGraph(IEnumerable<Entity> entities, bool showInheritance)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -47,7 +59,11 @@ namespace Palmmedia.DbContext2Yuml.Core
                     switch (relation.RelationType)
                     {
                         case RelationType.InheritsFrom:
-                            sb.AppendFormat("[{0}]^-[{1}],\r\n", relation.Target.Name, relation.Source.Name);
+                            if (showInheritance)
+                            {
+                                sb.AppendFormat("[{0}]^-[{1}],\r\n", relation.Target.Name, relation.Source.Name);
+                            }
+
                             break;
                         case RelationType.OneToOne:
                             sb.AppendFormat("[{0}]{1} 1 - {2} 1[{3}],\r\n", relation.Source.Name, relation.NameTargetToSource, relation.NameSourceToTarget, relation.Target.Name);

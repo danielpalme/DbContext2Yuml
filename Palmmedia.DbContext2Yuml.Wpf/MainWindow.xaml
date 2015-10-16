@@ -9,7 +9,10 @@
         <TextBox HorizontalAlignment="Stretch" Height="23" Margin="10,36,50,0" TextWrapping="Wrap" Text="{Binding File}" VerticalAlignment="Top" IsReadOnly="True"/>
         <Button Content="..." HorizontalAlignment="Right" Margin="0,36,10,0" VerticalAlignment="Top" Width="30" Command="{Binding SelectFileCommand}"/>
 
-        <TabControl HorizontalAlignment="Stretch" Margin="10,75,10,40" VerticalAlignment="Stretch" Background="White">
+
+        <CheckBox Content="Show Inheritance" IsChecked="{Binding ShowInheritance}" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top"/>
+        
+        <TabControl HorizontalAlignment="Stretch" Margin="10,100,10,40" VerticalAlignment="Stretch" Background="White">
             <TabItem Header="Graph">
                 <Grid>
                     <ScrollViewer Margin="0,50,0,30" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
